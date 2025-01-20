@@ -1,0 +1,19 @@
+[project]
+name = "jk-soccer-core"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Omar Crosby", email = "omar.crosby@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.10.5",
+]
+
+[project.scripts]
+jk-soccer-core = "jk_soccer_core:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
