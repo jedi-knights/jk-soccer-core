@@ -17,3 +17,9 @@ jk-soccer-core = "jk_soccer_core:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.invoke]
+version = "2.2.0"
+
+[tool.ruff]
+version = "0.9.2"
