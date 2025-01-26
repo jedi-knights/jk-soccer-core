@@ -12,11 +12,15 @@ dependencies = [
 ]
 
 [project.scripts]
+develop = "pip install -e ."
 jk-soccer-core = "jk_soccer_core:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv]
+manged = true
 
 [tool.invoke]
 version = "2.2.0"
