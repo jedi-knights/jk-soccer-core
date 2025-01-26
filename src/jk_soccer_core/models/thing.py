@@ -2,4 +2,5 @@ from pydantic import BaseModel
 
 
 class Thing(BaseModel):
-    name: str
+    name: str = None
+    description: str = None

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
 
+
 class Place(BaseModel):
-    name: str
+    name: str = None
