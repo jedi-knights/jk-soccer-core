@@ -1,6 +1,7 @@
 from .event import Event
 from .team import Team
 
+
 class Match(Event):
     home: Team
     away: Team

@@ -25,10 +25,10 @@ def build(ctx):
 @task(aliases=["l"])
 def lint(ctx):
     """Lint the project using ruff."""
-    ctx.run("ruff check .")
+    ctx.run("uvx ruff check .")
 
 
 @task(aliases=["f"])
 def fmt(ctx):
     """Format the project using ruff."""
-    ctx.run("ruff format  .")
+    ctx.run("uvx ruff format  .")
