@@ -2,4 +2,4 @@ from pydantic import BaseModel
 
 
 class Person(BaseModel):
-    name: str
+    name: str = None

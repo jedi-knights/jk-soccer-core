@@ -3,4 +3,4 @@ from datetime import date
 
 
 class Event(BaseModel):
-    date: date
+    date: date = None

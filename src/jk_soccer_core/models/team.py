@@ -5,5 +5,5 @@ from .coach import Coach
 
 
 class Team(Thing):
-    players: List[Player]
-    coaches: List[Coach]
+    players: List[Player] = None
+    coaches: List[Coach] = None

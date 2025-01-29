@@ -18,3 +18,19 @@ cd jk-soccer-core
 ```bash
 uv venv
 ```
+
+
+3. **Setup Marimo for experimentation**:
+
+```shell
+uv pip install marimo && marimo tutorial intro
+```
+
+
+## Marimo
+
+Create a new Marimo project with the following command:
+
+```shell
+marimo edit
+```

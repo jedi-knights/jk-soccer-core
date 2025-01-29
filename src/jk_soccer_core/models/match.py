@@ -3,7 +3,7 @@ from .team import Team
 
 
 class Match(Event):
-    home: Team
-    away: Team
-    home_score: int
-    away_score: int
+    home: Team = None
+    away: Team = None
+    home_score: int = 0
+    away_score: int = 0

@@ -2,4 +2,4 @@ from .person import Person
 
 
 class Player(Person):
-    position: str
+    position: str = None
