@@ -9,7 +9,7 @@ def _():
     import marimo as mo
 
     mo.md(
-        f"""
+        """
         # Jedi-Knights
         
         ## Soccer Core Notebook

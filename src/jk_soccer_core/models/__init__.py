@@ -7,3 +7,14 @@ from .event import Event
 from .match import Match
 from .player import Player
 from .team import Team
+
+__all__ = [
+    "Person",
+    "Thing",
+    "Place",
+    "Coach",
+    "Event",
+    "Match",
+    "Player",
+    "Team",
+]

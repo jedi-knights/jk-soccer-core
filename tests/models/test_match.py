@@ -36,23 +36,33 @@ def test_default_match() -> None:
 
 
 def test_contains_team_home_team(match, team_a):
-    assert match.contains_team(team_a.name) is True, f"Expected True, but got {match.contains_team(team_a.name)}"
+    assert match.contains_team(team_a.name) is True, (
+        f"Expected True, but got {match.contains_team(team_a.name)}"
+    )
 
 
 def test_contains_team_away_team(match, team_b):
-    assert match.contains_team(team_b.name) is True, f"Expected True, but got {match.contains_team(team_b.name)}"
+    assert match.contains_team(team_b.name) is True, (
+        f"Expected True, but got {match.contains_team(team_b.name)}"
+    )
 
 
 def test_contains_team_not_in_match(match):
-    assert match.contains_team("Team C") is False, f"Expected False, but got {match.contains_team('Team C')}"
+    assert match.contains_team("Team C") is False, (
+        f"Expected False, but got {match.contains_team('Team C')}"
+    )
 
 
 def test_contains_team_empty_string(match):
-    assert match.contains_team("") is False, f"Expected False, but got {match.contains_team('')}"
+    assert match.contains_team("") is False, (
+        f"Expected False, but got {match.contains_team('')}"
+    )
 
 
 def test_contains_team_none(match):
-    assert match.contains_team(None) is False, f"Expected False, but got {match.contains_team(None)}"
+    assert match.contains_team(None) is False, (
+        f"Expected False, but got {match.contains_team(None)}"
+    )
 
 
 def test_winner_home_team_wins(match, team_a):
@@ -102,20 +112,25 @@ def test_loser_no_teams():
     match = Match(home=None, away=None, home_score=1, away_score=1)
     assert match.loser() is None, f"Expected None, but got {match.loser()}"
 
+
 def test_is_draw_true(team_a, team_b):
     match = Match(home=team_a, away=team_b, home_score=1, away_score=1)
     assert match.is_draw() is True, f"Expected True, but got {match.is_draw()}"
 
+
 def test_is_draw_false(match):
     assert match.is_draw() is False, f"Expected False, but got {match.is_draw()}"
+
 
 def test_is_draw_no_scores(team_a, team_b):
     match = Match(home=team_a, away=team_b, home_score=0, away_score=0)
     assert match.is_draw() is True, f"Expected True, but got {match.is_draw()}"
 
+
 def test_is_draw_no_teams():
     match = Match(home=None, away=None, home_score=1, away_score=1)
     assert match.is_draw() is True, f"Expected True, but got {match.is_draw()}"
+
 
 def test_is_draw_none_scores(team_a, team_b):
     match = Match(home=team_a, away=team_b, home_score=None, away_score=None)
