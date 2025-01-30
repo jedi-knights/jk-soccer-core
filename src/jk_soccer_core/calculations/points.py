@@ -32,7 +32,5 @@ class PointsCalculation(MatchCalculation):
                 points += 1
             elif match.winner().name == team_name:
                 points += 3
-            elif match.loser().name == team_name:
-                points += 0
 
         return points
