@@ -4,10 +4,13 @@ from jk_soccer_core.models import Match
 
 
 class PointsCalculation(MatchCalculation):
+    def __init__(self, team_name: Optional[str]):
+        self.__team_name = team_name
+
     """
     Calculate the number of points a team has earned in a list of matches.
     """
-    def calculate(self, team_name: Optional[str], matches: Iterable[Match]) -> int:
+    def calculate(self, matches: Iterable[Match]) -> int:
         """
         Calculate the number of points a team has earned in a list of matches.
 
@@ -17,20 +20,20 @@ class PointsCalculation(MatchCalculation):
         :param matches: A list of matches to calculate the points from.
         :return: The number of points the team has earned.
         """
-        if team_name is None:
+        if self.__team_name is None:
             return 0
 
-        if team_name == "":
+        if self.__team_name == "":
             return 0
 
         points = 0
         for match in matches:
-            if not match.contains_team(team_name):
+            if not match.contains_team(self.__team_name):
                 continue
 
             if match.is_draw():
                 points += 1
-            elif match.winner().name == team_name:
+            elif match.winner().name == self.__team_name:
                 points += 3
 
         return points

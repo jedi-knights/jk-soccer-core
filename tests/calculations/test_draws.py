@@ -24,30 +24,30 @@ def matches(team_a, team_b, team_c):
     ]
 
 def test_draws_calculation_team_a(matches, team_a):
-    calc = DrawsCalculation()
-    assert calc.calculate(team_a.name, matches) == 3
+    calc = DrawsCalculation(team_a.name)
+    assert calc.calculate(matches) == 3
 
 def test_draws_calculation_team_b(matches, team_b):
-    calc = DrawsCalculation()
-    assert calc.calculate(team_b.name, matches) == 1
+    calc = DrawsCalculation(team_b.name)
+    assert calc.calculate(matches) == 1
 
 def test_draws_calculation_team_c(matches, team_c):
-    calc = DrawsCalculation()
-    assert calc.calculate(team_c.name, matches) == 2
+    calc = DrawsCalculation(team_c.name)
+    assert calc.calculate(matches) == 2
 
 def test_draws_calculation_empty_team_name(matches):
-    calc = DrawsCalculation()
-    assert calc.calculate("", matches) == 0
+    calc = DrawsCalculation("")
+    assert calc.calculate(matches) == 0
 
 def test_draws_calculation_none_team_name(matches):
-    calc = DrawsCalculation()
-    assert calc.calculate(None, matches) == 0
+    calc = DrawsCalculation(None)
+    assert calc.calculate(matches) == 0
 
 def test_draws_calculation_empty_matches(team_a):
-    calc = DrawsCalculation()
-    assert calc.calculate(team_a.name, []) == 0
+    calc = DrawsCalculation(team_a.name)
+    assert calc.calculate([]) == 0
 
 def test_draws_calculation_no_teams():
     match = Match(home=None, away=None, home_score=1, away_score=1)
-    calc = DrawsCalculation()
-    assert calc.calculate("Team A", [match]) == 0
+    calc = DrawsCalculation("Team A")
+    assert calc.calculate([match]) == 0

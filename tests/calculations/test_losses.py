@@ -29,36 +29,36 @@ def matches(team_a, team_b, team_c):
 
 
 def test_losses_calculation_team_a(matches, team_a):
-    calc = LossesCalculation()
-    assert calc.calculate(team_a.name, matches) == 0
+    calc = LossesCalculation(team_a.name)
+    assert calc.calculate(matches) == 0
 
 
 def test_losses_calculation_team_b(matches, team_b):
-    calc = LossesCalculation()
-    assert calc.calculate(team_b.name, matches) == 2
+    calc = LossesCalculation(team_b.name)
+    assert calc.calculate(matches) == 2
 
 
 def test_losses_calculation_team_c(matches, team_c):
-    calc = LossesCalculation()
-    assert calc.calculate(team_c.name, matches) == 0
+    calc = LossesCalculation(team_c.name)
+    assert calc.calculate(matches) == 0
 
 
 def test_losses_calculation_empty_team_name(matches):
-    calc = LossesCalculation()
-    assert calc.calculate("", matches) == 0
+    calc = LossesCalculation("")
+    assert calc.calculate(matches) == 0
 
 
 def test_losses_calculation_none_team_name(matches):
-    calc = LossesCalculation()
-    assert calc.calculate(None, matches) == 0
+    calc = LossesCalculation(None)
+    assert calc.calculate(matches) == 0
 
 
 def test_losses_calculation_empty_matches(team_a):
-    calc = LossesCalculation()
-    assert calc.calculate(team_a.name, []) == 0
+    calc = LossesCalculation(team_a.name)
+    assert calc.calculate([]) == 0
 
 
 def test_losses_calculation_no_teams():
     match = Match(home=None, away=None, home_score=1, away_score=1)
-    calc = LossesCalculation()
-    assert calc.calculate("Team A", [match]) == 0
+    calc = LossesCalculation("Team A")
+    assert calc.calculate([match]) == 0
