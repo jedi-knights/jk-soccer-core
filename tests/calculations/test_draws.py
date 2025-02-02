@@ -2,17 +2,21 @@ import pytest
 from jk_soccer_core.models import Match, Team
 from jk_soccer_core.calculations.draws import DrawsCalculation
 
+
 @pytest.fixture
 def team_a():
     return Team(name="Team A")
+
 
 @pytest.fixture
 def team_b():
     return Team(name="Team B")
 
+
 @pytest.fixture
 def team_c():
     return Team(name="Team C")
+
 
 @pytest.fixture
 def matches(team_a, team_b, team_c):
@@ -23,29 +27,36 @@ def matches(team_a, team_b, team_c):
         Match(home=team_c, away=team_a, home_score=2, away_score=2),
     ]
 
+
 def test_draws_calculation_team_a(matches, team_a):
     calc = DrawsCalculation(team_a.name)
     assert calc.calculate(matches) == 3
+
 
 def test_draws_calculation_team_b(matches, team_b):
     calc = DrawsCalculation(team_b.name)
     assert calc.calculate(matches) == 1
 
+
 def test_draws_calculation_team_c(matches, team_c):
     calc = DrawsCalculation(team_c.name)
     assert calc.calculate(matches) == 2
+
 
 def test_draws_calculation_empty_team_name(matches):
     calc = DrawsCalculation("")
     assert calc.calculate(matches) == 0
 
+
 def test_draws_calculation_none_team_name(matches):
     calc = DrawsCalculation(None)
     assert calc.calculate(matches) == 0
 
+
 def test_draws_calculation_empty_matches(team_a):
     calc = DrawsCalculation(team_a.name)
     assert calc.calculate([]) == 0
+
 
 def test_draws_calculation_no_teams():
     match = Match(home=None, away=None, home_score=1, away_score=1)

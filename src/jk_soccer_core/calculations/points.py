@@ -10,6 +10,7 @@ class PointsCalculation(MatchCalculation):
     """
     Calculate the number of points a team has earned in a list of matches.
     """
+
     def calculate(self, matches: Iterable[Match]) -> int:
         """
         Calculate the number of points a team has earned in a list of matches.
