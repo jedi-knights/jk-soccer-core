@@ -1,6 +1,7 @@
-from invoke import task
+from invoke import task, Exit
 import os
 import shutil
+import fnmatch
 
 
 @task(aliases=["c"])
@@ -38,3 +39,32 @@ def fmt(ctx):
 def test(ctx):
     """Run tests using pytest."""
     ctx.run("pytest")
+
+
+@task(aliases=["j"])
+def jsonlint(ctx):
+    """Lint JSON files using jsonlint."""
+    failed_files = []
+    for root, dirnames, filenames in os.walk("."):
+        if "node_modules" in dirnames:
+            dirnames.remove("node_modules")
+        if ".venv" in dirnames:
+            dirnames.remove(".venv")
+        for filename in fnmatch.filter(filenames, "*.json"):
+            json_file = os.path.join(root, filename)
+
+            try:
+                ctx.run(f"jsonlint -c {json_file}", hide=True)
+                print(f"Passed verification: {json_file}")
+            except Exception:
+                print(f"Failed verification: {json_file}")
+                failed_files.append(json_file)
+
+    if failed_files:
+        raise Exit(code=1)
+
+
+@task(aliases=["i"])
+def install(ctx):
+    """Install jsonlint using npm."""
+    ctx.run("npm install -g jsonlint")
