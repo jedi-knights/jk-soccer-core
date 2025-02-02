@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/jedi-knights/jk-soccer-core/compare/v1.0.0...v1.0.1) (2025-02-02)
+
+
+### Bug Fixes
+
+* trigger release ([b1c5cdf](https://github.com/jedi-knights/jk-soccer-core/commit/b1c5cdfb98a35465807c17ec0054ab329bb08f0f))
+
 # 1.0.0 (2025-02-02)
 
 
