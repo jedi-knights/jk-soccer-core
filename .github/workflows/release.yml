@@ -53,9 +53,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install --no-fund
-          python3 -m pip install --upgrade pip
-          python3 -m pip install setuptools wheel build twine invoke
-          invoke install
+          uv sync --all-extras --dev
 
       - name: Set Git Safe Directory
         run: |
