@@ -19,5 +19,5 @@ jobs:
       run: npm install -g jsonlint
 
     - name: Run jsonlint
-      run: find . -name "*.json" -print0 | xargs -0 jsonlint -c
-      shell: bash
+      run: npx jsonlint -c *.json
+
