@@ -78,7 +78,7 @@ jobs:
           DEBUG: semantic-release:*
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          cd /__w/lambda-kit/lambda-kit
+          cd /__w/jk-soccer-core/jk-soccer-core
           npx semantic-release || echo "semantic-release failed with exit code $?"
           pwd
           ls -la
