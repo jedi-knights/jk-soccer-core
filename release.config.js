@@ -18,7 +18,7 @@ module.exports = {
     [
       "@semantic-release/exec",
       {
-        prepareCmd: "python3 update_version.py ${nextRelease.version}",
+        prepareCmd: "uv run python3 update_version.py ${nextRelease.version}",
         successCmd: "echo 'Successfully released ${nextRelease.version}'",
         publishCmd: "echo 'version_changed=true' >> $GITHUB_OUTPUT"
       }
