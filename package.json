@@ -8,7 +8,9 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"No test\""
+    "test": "echo \"No test\"",
+    "prepare": "husky || true",
+    "lint": "eslint commitlint.config.js eslint.config.mjs release.config.js && jsonlint -q *.json"
   },
   "repository": {
     "type": "git",
