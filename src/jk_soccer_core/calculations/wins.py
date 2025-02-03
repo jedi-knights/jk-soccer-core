@@ -4,10 +4,17 @@ from jk_soccer_core.models import Match
 
 
 class WinsCalculation(MatchCalculation):
+    """
+    Calculate the number of wins for a specific team.
+    """
+
     def __init__(self, team_name: Optional[str]):
         self.__team_name = team_name
 
     def calculate(self, matches: Iterable[Match]) -> int:
+        """
+        Calculate the number of wins for a specific team.
+        """
         if self.__team_name is None:
             return 0
 
