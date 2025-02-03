@@ -12,3 +12,4 @@ A base module for jedi-knights related Soccer functionality.
 ## References
 
 - [Marimo](https://docs.marimo.io/)
+- [RPI for Division I Women's Soccer)(https://sites.google.com/site/rpifordivisioniwomenssoccer/Home)
