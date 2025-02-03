@@ -10,7 +10,7 @@ class Match(Event):
     home_score: Optional[int] = 0
     away_score: Optional[int] = 0
 
-    def contains_team(self, team_name: Optional[str]) -> bool:
+    def contains_team_name(self, team_name: Optional[str]) -> bool:
         """
         Check if the match contains a specific team
         """

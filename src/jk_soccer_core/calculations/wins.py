@@ -16,7 +16,7 @@ class WinsCalculation(MatchCalculation):
 
         count = 0
         for match in matches:
-            if not match.contains_team(self.__team_name):
+            if not match.contains_team_name(self.__team_name):
                 continue
 
             # If we get to this point we know that the team is in the match
