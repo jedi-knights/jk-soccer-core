@@ -7,7 +7,7 @@ import fnmatch
 @task(aliases=["c"])
 def clean(ctx):
     """Clean up build artifacts and temporary files."""
-    patterns = ["build", "dist", "*.egg-info", "__pycache__", "*.pyc", "*.pyo"]
+    patterns = ["build", "dist", "*.egg-info", "__pycache__", "*.pyc", "*.pyo", "junit.xml"]
 
     for pattern in patterns:
         for path in ctx.run(f'find . -name "{pattern}"', hide=True).stdout.splitlines():
@@ -38,7 +38,7 @@ def fmt(ctx):
 @task(aliases=["t"])
 def test(ctx):
     """Run tests using pytest."""
-    ctx.run("pytest")
+    ctx.run("pytest -n auto -v --junitxml=junit.xml")
 
 
 @task(aliases=["j"])

@@ -29,7 +29,7 @@ class PointsCalculation(MatchCalculation):
 
         points = 0
         for match in matches:
-            if not match.contains_team(self.__team_name):
+            if not match.contains_team_name(self.__team_name):
                 continue
 
             if match.is_draw():
