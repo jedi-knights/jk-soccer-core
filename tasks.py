@@ -38,7 +38,7 @@ def fmt(ctx):
 @task(aliases=["t"])
 def test(ctx):
     """Run tests using pytest."""
-    ctx.run("pytest")
+    ctx.run("pytest -n auto -v --junitxml=junit.xml")
 
 
 @task(aliases=["j"])
