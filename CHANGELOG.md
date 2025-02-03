@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/jedi-knights/jk-soccer-core/compare/v1.0.1...v1.1.0) (2025-02-03)
+
+
+### Features
+
+* add a calculation for meetings between two teams ([b36f73a](https://github.com/jedi-knights/jk-soccer-core/commit/b36f73a59e41a8e530bf0e60bd8a024ac4dc66e4))
+
 ## [1.0.1](https://github.com/jedi-knights/jk-soccer-core/compare/v1.0.0...v1.0.1) (2025-02-02)
 
 
