@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/jedi-knights/jk-soccer-core/compare/v1.1.0...v1.2.0) (2025-02-03)
+
+
+### Features
+
+* add winning percentage calculation ([d02091d](https://github.com/jedi-knights/jk-soccer-core/commit/d02091df2be89a856ba23a01ab5ec4b14d6084bd))
+
 # [1.1.0](https://github.com/jedi-knights/jk-soccer-core/compare/v1.0.1...v1.1.0) (2025-02-03)
 
 
