@@ -36,32 +36,32 @@ def test_default_match() -> None:
 
 
 def test_contains_team_home_team(match, team_a):
-    assert match.contains_team(team_a.name) is True, (
-        f"Expected True, but got {match.contains_team(team_a.name)}"
+    assert match.contains_team_name(team_a.name) is True, (
+        f"Expected True, but got {match.contains_team_name(team_a.name)}"
     )
 
 
 def test_contains_team_away_team(match, team_b):
-    assert match.contains_team(team_b.name) is True, (
-        f"Expected True, but got {match.contains_team(team_b.name)}"
+    assert match.contains_team_name(team_b.name) is True, (
+        f"Expected True, but got {match.contains_team_name(team_b.name)}"
     )
 
 
 def test_contains_team_not_in_match(match):
-    assert match.contains_team("Team C") is False, (
-        f"Expected False, but got {match.contains_team('Team C')}"
+    assert match.contains_team_name("Team C") is False, (
+        f"Expected False, but got {match.contains_team_name('Team C')}"
     )
 
 
 def test_contains_team_empty_string(match):
-    assert match.contains_team("") is False, (
-        f"Expected False, but got {match.contains_team('')}"
+    assert match.contains_team_name("") is False, (
+        f"Expected False, but got {match.contains_team_name('')}"
     )
 
 
 def test_contains_team_none(match):
-    assert match.contains_team(None) is False, (
-        f"Expected False, but got {match.contains_team(None)}"
+    assert match.contains_team_name(None) is False, (
+        f"Expected False, but got {match.contains_team_name(None)}"
     )
 
 
