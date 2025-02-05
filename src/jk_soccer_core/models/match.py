@@ -84,24 +84,3 @@ def has_team_name(match: Match, team_name: str) -> bool:
     Check if the match contains a specific team name
     """
     return match.home_team == team_name or match.away_team == team_name
-
-
-if __name__ == "__main__":
-    match_data = [
-        ("Team A", "Team B", 1, 1),
-        ("Team A", "Team B", 2, 1),
-        ("Team A", "Team B", 0, 0),
-        ("Team A", "Team B", 2, 3),
-        ("Team A", "Team B", -1, -1),
-        ("Team A", "Team B", 100, 99),
-        ("Team A", "Team B", 0, 1),
-        ("Team A", "Team B", 1, 0),
-    ]
-
-    for home_team, away_team, home_score, away_score in match_data:
-        match = Match(home_team, away_team, home_score, away_score)
-        print(match)
-        print(f"is_draw: {is_draw(match)}")
-        print(f"winner: {winner(match)}")
-        print(f"loser: {loser(match)}")
-        print()
