@@ -1,5 +1,8 @@
-from .person import Person
+from dataclasses import dataclass
 
 
-class Player(Person):
+@dataclass
+class Player:
+    name: str
     position: str = None
+    number: int = None

@@ -1,6 +1,6 @@
 from typing import Iterable, Optional
 from .match import MatchCalculation
-from jk_soccer_core.models import Match
+from jk_soccer_core.models import Match, has_team_name, winner
 
 
 class WinsCalculation(MatchCalculation):
@@ -23,12 +23,12 @@ class WinsCalculation(MatchCalculation):
 
         count = 0
         for match in matches:
-            if not match.contains_team_name(self.__team_name):
+            if not has_team_name(match, self.__team_name):
                 continue
 
             # If we get to this point we know that the team is in the match
-            winner = match.winner()
-            if winner is not None and winner.name == self.__team_name:
+            match_winner = winner(match)
+            if winner is not None and match_winner == self.__team_name:
                 count += 1
 
         return count

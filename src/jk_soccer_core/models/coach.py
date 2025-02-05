@@ -1,5 +1,7 @@
-from .person import Person
+from dataclasses import dataclass
 
 
-class Coach(Person):
+@dataclass
+class Coach:
+    name: str
     title: str = None

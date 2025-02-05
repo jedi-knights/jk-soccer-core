@@ -1,6 +1,6 @@
 from typing import Iterable, Optional
 from .match import MatchCalculation
-from jk_soccer_core.models import Match
+from jk_soccer_core.models import Match, has_team_name, is_draw, winner
 
 
 class PointsCalculation(MatchCalculation):
@@ -29,12 +29,12 @@ class PointsCalculation(MatchCalculation):
 
         points = 0
         for match in matches:
-            if not match.contains_team_name(self.__team_name):
+            if not has_team_name(match, self.__team_name):
                 continue
 
-            if match.is_draw():
+            if is_draw(match):
                 points += 1
-            elif match.winner().name == self.__team_name:
+            elif winner(match) == self.__team_name:
                 points += 3
 
         return points

@@ -1,6 +1,6 @@
 from typing import Iterable, Optional
 from .match import MatchCalculation
-from jk_soccer_core.models import Match
+from jk_soccer_core.models import Match, has_team_name, is_draw
 
 
 class DrawsCalculation(MatchCalculation):
@@ -16,10 +16,10 @@ class DrawsCalculation(MatchCalculation):
 
         count = 0
         for match in matches:
-            if not match.contains_team_name(self.__team_name):
+            if not has_team_name(match, self.__team_name):
                 continue
 
-            if match.is_draw():
+            if is_draw(match):
                 count += 1
 
         return count

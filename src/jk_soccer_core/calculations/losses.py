@@ -1,6 +1,6 @@
 from typing import Iterable, Optional
 from .match import MatchCalculation
-from jk_soccer_core.models import Match
+from jk_soccer_core.models import Match, has_team_name, loser
 
 
 class LossesCalculation(MatchCalculation):
@@ -16,12 +16,12 @@ class LossesCalculation(MatchCalculation):
 
         count = 0
         for match in matches:
-            if not match.contains_team_name(self.__team_name):
+            if not has_team_name(match, self.__team_name):
                 continue
 
             # If we get to this point we know that the team is in the match
-            loser = match.loser()
-            if loser is not None and loser.name == self.__team_name:
+            target_name = loser(match)
+            if target_name is not None and target_name == self.__team_name:
                 count += 1
 
         return count
