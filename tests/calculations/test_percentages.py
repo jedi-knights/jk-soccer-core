@@ -1,5 +1,5 @@
 import pytest
-from jk_soccer_core.models import Match, Team
+from jk_soccer_core.models import Match
 from jk_soccer_core.calculations.percentages import WinningPercentageCalculation
 
 

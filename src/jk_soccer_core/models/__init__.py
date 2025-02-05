@@ -16,4 +16,5 @@ __all__ = [
     "is_draw",
     "winner",
     "loser",
+    "has_team_name"
 ]
