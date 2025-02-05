@@ -1,6 +1,6 @@
 from typing import Iterable, Optional
 from .match import MatchCalculation
-from jk_soccer_core.models import Match
+from jk_soccer_core.models import Match, has_team_name
 
 
 class MeetingsCalculation(MatchCalculation):
@@ -21,9 +21,12 @@ class MeetingsCalculation(MatchCalculation):
         """
         meetings = 0
         for match in matches:
-            if match.contains_team_name(self.__team_name1) and match.contains_team_name(
-                self.__team_name2
-            ):
-                meetings += 1
+            if not has_team_name(match, self.__team_name1):
+                continue
+
+            if not has_team_name(match, self.__team_name2):
+                continue
+
+            meetings += 1
 
         return meetings

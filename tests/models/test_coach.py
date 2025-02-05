@@ -5,10 +5,10 @@ def test_default_coach() -> None:
     # Arrange
 
     # Act
-    coach = Coach()
+    coach = Coach("Fred Flintstone")
 
     # Assert
     assert len(coach.__dict__) == 2, (
         f"Expected 2 attributes, but got {len(coach.__dict__)}"
     )
-    assert coach.name is None
+    assert coach.name == "Fred Flintstone"

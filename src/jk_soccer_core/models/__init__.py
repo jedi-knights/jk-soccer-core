@@ -1,20 +1,19 @@
-from .person import Person
-from .thing import Thing
-from .place import Place
-
 from .coach import Coach
-from .event import Event
 from .match import Match
 from .player import Player
 from .team import Team
 
+from .match import is_draw
+from .match import winner
+from .match import loser
+from .match import has_team_name
+
 __all__ = [
-    "Person",
-    "Thing",
-    "Place",
     "Coach",
-    "Event",
     "Match",
     "Player",
     "Team",
+    "is_draw",
+    "winner",
+    "loser",
 ]

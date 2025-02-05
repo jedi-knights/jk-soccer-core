@@ -1,6 +1,6 @@
 from typing import Iterable, Optional
 from .match import MatchCalculation
-from jk_soccer_core.models import Match
+from jk_soccer_core.models import Match, has_team_name
 
 from jk_soccer_core.calculations.wins import WinsCalculation
 from jk_soccer_core.calculations.losses import LossesCalculation
@@ -37,7 +37,7 @@ class WinningPercentageCalculation(MatchCalculation):
             filtered_matches = [
                 match
                 for match in matches
-                if not match.contains_team_name(self.__skip_team_name)
+                if not has_team_name(match, self.__skip_team_name)
             ]
 
         wins = WinsCalculation(self.__team_name).calculate(filtered_matches)
