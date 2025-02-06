@@ -52,3 +52,48 @@ class WinningPercentageCalculation(MatchCalculation):
         result = round(result, self.__number_of_digits)
 
         return result
+
+
+def get_opponents_names(
+    target_team_name: str, matches: Iterable[Match]
+) -> Iterable[str]:
+    """
+    Get the names of the opponents of a specific team
+    """
+    team_names = set()
+
+    for match in matches:
+        if not has_team_name(match, target_team_name):
+            continue
+
+        opponent_name = (
+            match.home_team if match.away_team == target_team_name else match.away_team
+        )
+
+        team_names.add(opponent_name)
+
+    return sorted(team_names)
+
+
+class OpponentsWinningPercentageCalculation(MatchCalculation):
+    """
+    Calculate the winning percentage of the opponents of a specific team
+    """
+
+    def __init__(
+        self,
+        team_name: Optional[str],
+        skip_team_name: Optional[str],
+        number_of_digits: int = 2,
+    ):
+        self.__team_name = team_name
+        self.__skip_team_name = skip_team_name
+        self.__number_of_digits = number_of_digits
+
+    def calculate(self, matches: Iterable[Match]) -> float:
+        """
+        Calculate the winning percentage of the opponents of a specific team
+        """
+        opponents_names = get_opponents_names(self.__team_name, matches)
+
+        return 0.0

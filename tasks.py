@@ -15,6 +15,7 @@ def clean(ctx):
         "*.pyc",
         "*.pyo",
         "junit.xml",
+        ".coverage",
     ]
 
     for pattern in patterns:

@@ -1,6 +1,7 @@
 import pytest
 from jk_soccer_core.models import Match
 from jk_soccer_core.calculations.percentages import WinningPercentageCalculation
+from jk_soccer_core.calculations.percentages import get_opponents_names
 
 
 @pytest.fixture
@@ -87,3 +88,45 @@ def test_winning_percentage_calculation_rounding(teams):
     ]
     calc = WinningPercentageCalculation("Team A", None, number_of_digits=3)
     assert calc.calculate(matches) == 0.833  # 2 wins, 1 draw
+
+
+def test_get_opponents_names_no_matches():
+    assert get_opponents_names("Team A", []) == []
+
+
+def test_get_opponents_names_no_opponents(matches):
+    assert get_opponents_names("Team Z", matches) == []
+
+
+def test_get_opponents_names_single_opponent():
+    matches = [Match("Team A", "Team B", 1, 0)]
+    assert get_opponents_names("Team A", matches) == ["Team B"]
+
+
+def test_get_opponents_names_multiple_opponents(matches):
+    assert get_opponents_names("Team A", matches) == ["Team B", "Team C", "Team D"]
+
+
+def test_get_opponents_names_sorted_order():
+    matches = [
+        Match("Team A", "Team C", 1, 0),
+        Match("Team A", "Team B", 2, 1),
+        Match("Team A", "Team D", 1, 1),
+    ]
+    assert get_opponents_names("Team A", matches) == ["Team B", "Team C", "Team D"]
+
+
+def test_get_opponents_names_duplicate_opponents():
+    matches = [
+        Match("Team A", "Team B", 1, 0),
+        Match("Team A", "Team B", 2, 1),
+    ]
+    assert get_opponents_names("Team A", matches) == ["Team B"]
+
+
+def test_get_opponents_names_home_and_away():
+    matches = [
+        Match("Team A", "Team B", 1, 0),
+        Match("Team C", "Team A", 2, 1),
+    ]
+    assert get_opponents_names("Team A", matches) == ["Team B", "Team C"]
