@@ -1,6 +1,6 @@
 import pytest
 
-from jk_soccer_core.models import Match, is_draw, winner, loser
+from jk_soccer_core.models import Match, is_draw, winner, loser, get_team_names
 
 
 @pytest.mark.parametrize(
@@ -79,3 +79,35 @@ def test_winner(home_team, away_team, home_score, away_score, expected):
 def test_loser(home_team, away_team, home_score, away_score, expected):
     match = Match(home_team, away_team, home_score, away_score)
     assert loser(match) == expected
+
+
+def test_get_team_names_empty():
+    matches = []
+    result = get_team_names(matches)
+    assert result == set()
+
+
+def test_get_team_names_single_match():
+    matches = [Match(home_team="Team A", away_team="Team B")]
+    result = get_team_names(matches)
+    assert result == {"Team A", "Team B"}
+
+
+def test_get_team_names_multiple_matches():
+    matches = [
+        Match(home_team="Team A", away_team="Team B"),
+        Match(home_team="Team C", away_team="Team D"),
+        Match(home_team="Team A", away_team="Team C"),
+    ]
+    result = get_team_names(matches)
+    assert result == {"Team A", "Team B", "Team C", "Team D"}
+
+
+def test_get_team_names_with_none():
+    matches = [
+        Match(home_team="Team A", away_team=None),
+        Match(home_team=None, away_team="Team B"),
+        Match(home_team="Team C", away_team="Team D"),
+    ]
+    result = get_team_names(matches)
+    assert result == {"Team A", "Team B", "Team C", "Team D", None}

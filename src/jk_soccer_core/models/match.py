@@ -2,7 +2,7 @@ import random
 import uuid
 
 from datetime import date, time, timedelta
-from typing import Optional
+from typing import Optional, Iterable
 
 from dataclasses import dataclass, field
 
@@ -84,3 +84,16 @@ def has_team_name(match: Match, team_name: str) -> bool:
     Check if the match contains a specific team name
     """
     return match.home_team == team_name or match.away_team == team_name
+
+
+def get_team_names(matches: Iterable[Match]) -> Iterable[str]:
+    """
+    Get the names of the teams in the matches
+    """
+    team_names = set()
+
+    for match in matches:
+        team_names.add(match.home_team)
+        team_names.add(match.away_team)
+
+    return team_names

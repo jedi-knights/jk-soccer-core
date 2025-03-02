@@ -7,6 +7,7 @@ from .match import is_draw
 from .match import winner
 from .match import loser
 from .match import has_team_name
+from .match import get_team_names
 
 __all__ = [
     "Coach",
@@ -17,4 +18,5 @@ __all__ = [
     "winner",
     "loser",
     "has_team_name",
+    "get_team_names",
 ]
