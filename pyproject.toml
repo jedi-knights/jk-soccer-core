@@ -5,12 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
- "marimo>=0.11.0",
- "matplotlib>=3.10.0",
- "numpy>=2.2.2",
- "pandas>=2.2.3",
- "pydantic>=2.10.5",
- "toml>=0.10.2",
+ "marimo",
+ "matplotlib",
+ "numpy",
+ "pandas",
+ "pydantic",
+ "toml",
 ]
 [[project.authors]]
 name = "Omar Crosby"
@@ -21,7 +21,14 @@ requires = [ "hatchling",]
 build-backend = "hatchling.build"
 
 [dependency-groups]
-dev = [ "invoke>=2.2.0", "pytest>=8.3.4", "pytest-cov>=6.0.0", "pytest-xdist>=3.6.1", "ruff>=0.9.3",]
+dev = [
+ "invoke",
+ "pytest",
+ "pytest-mock",
+ "pytest-cov",
+ "pytest-xdist",
+ "ruff",
+]
 
 [project.scripts]
 jk-soccer-core = "jk_soccer_core:main"
