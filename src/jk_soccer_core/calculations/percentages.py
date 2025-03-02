@@ -94,6 +94,8 @@ class OpponentsWinningPercentageCalculation(MatchCalculation):
         """
         Calculate the winning percentage of the opponents of a specific team
         """
-        opponents_names = get_opponents_names(self.__team_name, matches)
+        raise NotImplementedError("Not implemented yet")
 
-        return 0.0
+        # opponents_names = get_opponents_names(self.__team_name, matches)
+        #
+        # return 0.0
