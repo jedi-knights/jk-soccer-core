@@ -41,5 +41,8 @@
     "husky": "^9.1.6",
     "jsonlint": "^1.6.3",
     "semantic-release": "^24.1.2"
+  },
+  "dependencies": {
+    "underscore": "^1.13.7"
   }
 }
