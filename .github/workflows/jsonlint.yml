@@ -8,6 +8,9 @@ on:
     paths:
       - '*.json'
 
+permissions:
+  contents: read
+
 jobs:
   jsonlint:
     runs-on: ubuntu-latest
