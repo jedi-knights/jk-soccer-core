@@ -21,5 +21,5 @@ class DrawsCalculation(AbstractMatchCalculation):
             for match in matches_played_generator(
                 self.__team_name, matches, self.__skip_team_name
             )
-            if MatchDecorator(match).is_draw
+            if match.penalty_shootout or MatchDecorator(match).is_draw
         )
