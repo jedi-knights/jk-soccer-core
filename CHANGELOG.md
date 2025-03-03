@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/jedi-knights/jk-soccer-core/compare/v1.2.1...v1.3.0) (2025-03-03)
+
+
+### Bug Fixes
+
+* update the build ([def6bed](https://github.com/jedi-knights/jk-soccer-core/commit/def6bed825b4cd727213377ad6908001bb560854))
+
+
+### Features
+
+* **shootout:** update the calculators to account for how the NCAA treats penalty shootouts ([a1f8707](https://github.com/jedi-knights/jk-soccer-core/commit/a1f8707512595b691c10aa9915b9b9bee424a3d8))
+
 ## [1.2.1](https://github.com/jedi-knights/jk-soccer-core/compare/v1.2.0...v1.2.1) (2025-02-05)
 
 
