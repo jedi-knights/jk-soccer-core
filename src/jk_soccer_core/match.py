@@ -69,7 +69,7 @@ class MatchDecorator:
 
         return self.loser == team_name
 
-    def has_team_name(self, team_name: str) -> bool:
+    def has_team_name(self, team_name: Optional[str]) -> bool:
         """
         Check if the match contains a specific team name
         """
@@ -95,20 +95,23 @@ def get_team_names(matches: Iterable[Match]) -> Iterable[str]:
     """
     Get the names of the teams in the matches
     """
-    team_names = set()
+    team_names = list()
 
     for match in matches:
-        team_names.add(match.home_team)
-        team_names.add(match.away_team)
+        if match.home_team not in team_names:
+            team_names.append(match.home_team)
 
-    return list(team_names)
+        if match.away_team not in team_names:
+            team_names.append(match.away_team)
+
+    return list(filter(None, team_names))  # Ensure no None values
 
 
 def matches_played_generator(
     target_team_name: str,
     matches: Iterable[Match],
     skip_team_name: Optional[str] = None,
-):
+) -> Iterable[Match]:
     """
     Get the matches played by a specific team with an optional team to skip
 
@@ -130,7 +133,9 @@ def matches_played_generator(
                 yield match
 
 
-def meetings_generator(team_name1: str, team_name2: str, matches: Iterable[Match]):
+def meetings_generator(
+    team_name1: Optional[str], team_name2: Optional[str], matches: Iterable[Match]
+) -> Iterable[Match]:
     """
     Get the matches between two teams
     """
@@ -146,7 +151,9 @@ def meetings_generator(team_name1: str, team_name2: str, matches: Iterable[Match
         yield match
 
 
-def opponent_names_generator(target_team_name: str, matches: Iterable[Match]):
+def opponent_names_generator(
+    target_team_name: Optional[str], matches: Iterable[Match]
+) -> Iterable[str]:
     """
     Get the names of the opponents of a specific team
     """

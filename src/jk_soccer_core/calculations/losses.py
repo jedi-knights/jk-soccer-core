@@ -9,8 +9,9 @@ class LossesCalculation(AbstractMatchCalculation):
     Calculate the number of losses for a specific team.
     """
 
-    def __init__(self, team_name: Optional[str]):
+    def __init__(self, team_name: Optional[str], skip_team_name: Optional[str] = None):
         self.__team_name = team_name
+        self.__skip_team_name = skip_team_name
 
     def calculate(self, matches: Iterable[Match]) -> int:
         """
@@ -21,6 +22,8 @@ class LossesCalculation(AbstractMatchCalculation):
 
         return sum(
             1
-            for match in matches_played_generator(self.__team_name, matches)
+            for match in matches_played_generator(
+                self.__team_name, matches, self.__skip_team_name
+            )
             if MatchDecorator(match).loser == self.__team_name
         )

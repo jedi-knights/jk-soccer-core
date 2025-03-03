@@ -9,8 +9,9 @@ class PointsCalculation(AbstractMatchCalculation):
     Calculate the number of points a team has earned in an iterable of matches.
     """
 
-    def __init__(self, team_name: Optional[str]):
+    def __init__(self, team_name: Optional[str], skip_team_name: Optional[str] = None):
         self.__team_name = team_name
+        self.__skip_team_name = skip_team_name
 
     def calculate(self, matches: Iterable[Match]) -> int:
         """
@@ -26,7 +27,9 @@ class PointsCalculation(AbstractMatchCalculation):
             return 0
 
         points = 0
-        for match in matches_played_generator(self.__team_name, matches):
+        for match in matches_played_generator(
+            self.__team_name, matches, self.__skip_team_name
+        ):
             decorated_match = MatchDecorator(match)
             points += 1 if decorated_match.is_draw else 0
             points += 3 if decorated_match.won(self.__team_name) else 0
