@@ -8,7 +8,6 @@
     "test": "tests"
   },
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "test": "echo \"No test\"",
     "prepare": "husky || true",
     "lint": "eslint commitlint.config.js eslint.config.mjs release.config.js",
@@ -48,9 +47,5 @@
   },
   "dependencies": {
     "underscore": "^1.13.7"
-  },
-  "resolutions": {
-    "fast-json-patch": "^3.1.1",
-    "ajv-cli": "^5.0.0"
   }
 }
