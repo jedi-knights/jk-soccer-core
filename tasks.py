@@ -32,7 +32,13 @@ def build(ctx):
     ctx.run("uv build")
 
 
-@task(aliases=["l"])
+@task(aliases=["m"])
+def mypy(ctx):
+    """Run mypy for static type checking."""
+    ctx.run("mypy src/jk_soccer_core")
+
+
+@task(aliases=["l"], pre=[mypy])
 def lint(ctx):
     """Lint the project using ruff."""
     ctx.run("ruff check .")
@@ -47,7 +53,7 @@ def fmt(ctx):
 @task(aliases=["t"])
 def test(ctx):
     """Run tests using pytest."""
-    ctx.run("pytest -n auto -v --junitxml=junit.xml")
+    ctx.run("uv run pytest -v --cov=src tests/unit --junitxml=junit.xml")
 
 
 @task(aliases=["j"])
@@ -75,5 +81,5 @@ def jsonlint(ctx):
 
 @task(aliases=["i"])
 def install(ctx):
-    """Install jsonlint using npm."""
-    ctx.run("npm install -g jsonlint")
+    # Install Python dependencies using pip
+    ctx.run("uv sync --all-extras --dev")

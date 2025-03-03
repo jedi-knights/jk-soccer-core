@@ -1,9 +1,10 @@
 from typing import Iterable, Optional
-from .match import MatchCalculation
-from jk_soccer_core.models import Match, has_team_name
+from .abstract_match_calculation import AbstractMatchCalculation
+from jk_soccer_core import Match
+from jk_soccer_core.match import meetings_generator
 
 
-class MeetingsCalculation(MatchCalculation):
+class MeetingsCalculation(AbstractMatchCalculation):
     """
     Calculate the number of meetings between two teams.
     """
@@ -19,14 +20,11 @@ class MeetingsCalculation(MatchCalculation):
         :param matches: The list of matches to analyze.
         :return: The number of meetings between the two teams.
         """
-        meetings = 0
-        for match in matches:
-            if not has_team_name(match, self.__team_name1):
-                continue
-
-            if not has_team_name(match, self.__team_name2):
-                continue
-
-            meetings += 1
-
-        return meetings
+        return len(
+            [
+                _
+                for _ in meetings_generator(
+                    self.__team_name1, self.__team_name2, matches
+                )
+            ]
+        )

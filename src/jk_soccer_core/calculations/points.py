@@ -1,15 +1,17 @@
 from typing import Iterable, Optional
-from .match import MatchCalculation
-from jk_soccer_core.models import Match, has_team_name, is_draw, winner
+from .abstract_match_calculation import AbstractMatchCalculation
+from jk_soccer_core import Match, MatchDecorator
+from jk_soccer_core.match import matches_played_generator
 
 
-class PointsCalculation(MatchCalculation):
-    def __init__(self, team_name: Optional[str]):
+class PointsCalculation(AbstractMatchCalculation):
+    """
+    Calculate the number of points a team has earned in an iterable of matches.
+    """
+
+    def __init__(self, team_name: Optional[str], skip_team_name: Optional[str] = None):
         self.__team_name = team_name
-
-    """
-    Calculate the number of points a team has earned in a list of matches.
-    """
+        self.__skip_team_name = skip_team_name
 
     def calculate(self, matches: Iterable[Match]) -> int:
         """
@@ -21,20 +23,15 @@ class PointsCalculation(MatchCalculation):
         :param matches: A list of matches to calculate the points from.
         :return: The number of points the team has earned.
         """
-        if self.__team_name is None:
-            return 0
-
-        if self.__team_name == "":
+        if not self.__team_name:
             return 0
 
         points = 0
-        for match in matches:
-            if not has_team_name(match, self.__team_name):
-                continue
-
-            if is_draw(match):
-                points += 1
-            elif winner(match) == self.__team_name:
-                points += 3
+        for match in matches_played_generator(
+            self.__team_name, matches, self.__skip_team_name
+        ):
+            decorated_match = MatchDecorator(match)
+            points += 1 if decorated_match.is_draw else 0
+            points += 3 if decorated_match.won(self.__team_name) else 0
 
         return points

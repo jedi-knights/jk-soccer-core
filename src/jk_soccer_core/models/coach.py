@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 
+from typing import Optional
+
 
 @dataclass
 class Coach:
-    name: str
-    title: str = None
+    name: Optional[str] = None
+    title: Optional[str] = None
