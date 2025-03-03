@@ -1,13 +1,14 @@
 from typing import Iterable, Optional
-from .match import MatchCalculation
-from jk_soccer_core.models import Match, has_team_name
+from .abstract_match_calculation import AbstractMatchCalculation
+from jk_soccer_core import Match
 
+from jk_soccer_core.match import opponent_names_generator, matches_played_generator
 from jk_soccer_core.calculations.wins import WinsCalculation
 from jk_soccer_core.calculations.losses import LossesCalculation
 from jk_soccer_core.calculations.draws import DrawsCalculation
 
 
-class WinningPercentageCalculation(MatchCalculation):
+class WinningPercentageCalculation(AbstractMatchCalculation):
     """
     Calculate the winning percentage for a specific team
     """
@@ -26,20 +27,12 @@ class WinningPercentageCalculation(MatchCalculation):
         """
         Calculate the winning percentage for a specific team
         """
-        if self.__team_name is None:
+        if not self.__team_name:
             return 0.0
 
-        if self.__team_name == "":
-            return 0.0
-
-        filtered_matches = matches
-        if self.__skip_team_name is not None:
-            filtered_matches = [
-                match
-                for match in matches
-                if not has_team_name(match, self.__skip_team_name)
-            ]
-
+        filtered_matches = list(
+            matches_played_generator(self.__team_name, matches, self.__skip_team_name)
+        )
         wins = WinsCalculation(self.__team_name).calculate(filtered_matches)
         losses = LossesCalculation(self.__team_name).calculate(filtered_matches)
         draws = DrawsCalculation(self.__team_name).calculate(filtered_matches)
@@ -54,30 +47,11 @@ class WinningPercentageCalculation(MatchCalculation):
         return result
 
 
-def get_opponents_names(
-    target_team_name: str, matches: Iterable[Match]
-) -> Iterable[str]:
+class OpponentsWinningPercentageCalculation(AbstractMatchCalculation):
     """
-    Get the names of the opponents of a specific team
-    """
-    team_names = set()
+    Calculate the average winning percentage of the opponents of a specific team
 
-    for match in matches:
-        if not has_team_name(match, target_team_name):
-            continue
-
-        opponent_name = (
-            match.home_team if match.away_team == target_team_name else match.away_team
-        )
-
-        team_names.add(opponent_name)
-
-    return sorted(team_names)
-
-
-class OpponentsWinningPercentageCalculation(MatchCalculation):
-    """
-    Calculate the winning percentage of the opponents of a specific team
+    The opponents winning percentage is calculated by summing the winning percentage of all the opponents of a specific team and dividing it by the number of opponents.
     """
 
     def __init__(
@@ -94,8 +68,16 @@ class OpponentsWinningPercentageCalculation(MatchCalculation):
         """
         Calculate the winning percentage of the opponents of a specific team
         """
-        raise NotImplementedError("Not implemented yet")
+        count = 0
+        accumulator = 0.0
+        for opponent_name in opponent_names_generator(self.__team_name, matches):
+            # I need to calculate the winning percentage of the current opponent against teams other than the target team
+            count += 1
+            accumulator += WinningPercentageCalculation(
+                opponent_name, self.__team_name, self.__number_of_digits
+            ).calculate(matches)
 
-        # opponents_names = get_opponents_names(self.__team_name, matches)
-        #
-        # return 0.0
+        if count == 0:
+            return 0.0
+
+        return round(accumulator / float(count), self.__number_of_digits)

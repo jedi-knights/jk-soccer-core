@@ -1,9 +1,11 @@
 from typing import Iterable, Optional
-from .match import MatchCalculation
-from jk_soccer_core.models import Match, has_team_name, winner
+from .abstract_match_calculation import AbstractMatchCalculation
+from jk_soccer_core import Match, MatchDecorator
+
+from jk_soccer_core.match import matches_played_generator
 
 
-class WinsCalculation(MatchCalculation):
+class WinsCalculation(AbstractMatchCalculation):
     """
     Calculate the number of wins for a specific team.
     """
@@ -15,20 +17,11 @@ class WinsCalculation(MatchCalculation):
         """
         Calculate the number of wins for a specific team.
         """
-        if self.__team_name is None:
+        if not self.__team_name:
             return 0
 
-        if self.__team_name == "":
-            return 0
-
-        count = 0
-        for match in matches:
-            if not has_team_name(match, self.__team_name):
-                continue
-
-            # If we get to this point we know that the team is in the match
-            match_winner = winner(match)
-            if winner is not None and match_winner == self.__team_name:
-                count += 1
-
-        return count
+        return sum(
+            1
+            for match in matches_played_generator(self.__team_name, matches)
+            if MatchDecorator(match).winner == self.__team_name
+        )

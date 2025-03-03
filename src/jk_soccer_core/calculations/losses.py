@@ -1,27 +1,26 @@
 from typing import Iterable, Optional
-from .match import MatchCalculation
-from jk_soccer_core.models import Match, has_team_name, loser
+from .abstract_match_calculation import AbstractMatchCalculation
+from jk_soccer_core import Match, MatchDecorator
+from jk_soccer_core.match import matches_played_generator
 
 
-class LossesCalculation(MatchCalculation):
+class LossesCalculation(AbstractMatchCalculation):
+    """
+    Calculate the number of losses for a specific team.
+    """
+
     def __init__(self, team_name: Optional[str]):
         self.__team_name = team_name
 
     def calculate(self, matches: Iterable[Match]) -> int:
-        if self.__team_name is None:
+        """
+        Calculate the number of losses for a specific team.
+        """
+        if not self.__team_name:
             return 0
 
-        if self.__team_name == "":
-            return 0
-
-        count = 0
-        for match in matches:
-            if not has_team_name(match, self.__team_name):
-                continue
-
-            # If we get to this point we know that the team is in the match
-            target_name = loser(match)
-            if target_name is not None and target_name == self.__team_name:
-                count += 1
-
-        return count
+        return sum(
+            1
+            for match in matches_played_generator(self.__team_name, matches)
+            if MatchDecorator(match).loser == self.__team_name
+        )

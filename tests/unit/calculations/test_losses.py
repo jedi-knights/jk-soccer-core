@@ -1,5 +1,5 @@
 import pytest
-from jk_soccer_core.models import Match
+from jk_soccer_core import Match
 from jk_soccer_core.calculations.losses import LossesCalculation
 
 

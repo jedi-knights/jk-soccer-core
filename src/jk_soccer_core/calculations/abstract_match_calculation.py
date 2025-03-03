@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from jk_soccer_core.models import Match
 
 
-class MatchCalculation(ABC):
+class AbstractMatchCalculation(ABC):
     @abstractmethod
     def calculate(
         self, matches: Iterable[Match]

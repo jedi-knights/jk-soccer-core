@@ -47,7 +47,7 @@ def fmt(ctx):
 @task(aliases=["t"])
 def test(ctx):
     """Run tests using pytest."""
-    ctx.run("pytest -n auto -v --junitxml=junit.xml")
+    ctx.run("uv run pytest -v --cov=src tests/unit --junitxml=junit.xml")
 
 
 @task(aliases=["j"])
@@ -75,5 +75,5 @@ def jsonlint(ctx):
 
 @task(aliases=["i"])
 def install(ctx):
-    """Install jsonlint using npm."""
-    ctx.run("npm install -g jsonlint")
+    # Install Python dependencies using pip
+    ctx.run("uv sync --all-extras --dev")
