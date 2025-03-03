@@ -8,9 +8,11 @@
     "test": "tests"
   },
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "test": "echo \"No test\"",
     "prepare": "husky || true",
-    "lint": "eslint commitlint.config.js eslint.config.mjs release.config.js && jsonlint -q *.json"
+    "lint": "eslint commitlint.config.js eslint.config.mjs release.config.js",
+    "jsonlint": "find . -path './node_modules' -prune -o -path './.venv' -prune -o -path './venv' -prune -o -name '*.json' -exec ajv validate -s schema.json -d {} \\;"
   },
   "repository": {
     "type": "git",
@@ -36,13 +38,19 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.0",
     "@semantic-release/release-notes-generator": "^14.0.1",
+    "ajv": "^8.17.1",
+    "ajv-cli": "^5.0.0",
     "eslint": "^9.19.0",
+    "fast-json-patch": "^3.1.1",
     "globals": "^15.11.0",
     "husky": "^9.1.6",
-    "jsonlint": "^1.6.3",
     "semantic-release": "^24.1.2"
   },
   "dependencies": {
     "underscore": "^1.13.7"
+  },
+  "resolutions": {
+    "fast-json-patch": "^3.1.1",
+    "ajv-cli": "^5.0.0"
   }
 }
