@@ -16,7 +16,7 @@ class WinningPercentageCalculation(AbstractMatchCalculation):
     def __init__(
         self,
         team_name: Optional[str],
-        skip_team_name: Optional[str],
+        skip_team_name: Optional[str] = None,
         number_of_digits: int = 2,
     ):
         self.__team_name = team_name
@@ -57,7 +57,7 @@ class OpponentsWinningPercentageCalculation(AbstractMatchCalculation):
     def __init__(
         self,
         team_name: Optional[str],
-        skip_team_name: Optional[str],
+        skip_team_name: Optional[str] = None,
         number_of_digits: int = 2,
     ):
         self.__team_name = team_name

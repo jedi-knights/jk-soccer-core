@@ -25,5 +25,5 @@ class LossesCalculation(AbstractMatchCalculation):
             for match in matches_played_generator(
                 self.__team_name, matches, self.__skip_team_name
             )
-            if MatchDecorator(match).loser == self.__team_name
+            if not match.penalty_shootout and MatchDecorator(match).loser == self.__team_name
         )
