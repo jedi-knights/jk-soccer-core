@@ -15,12 +15,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Assign PR to Project
-      uses: actions/add-to-project@v1.0.2
-      with:
-        project-url: 'https://github.com/orgs/jedi-knights/projects/10'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Set Assignee
       run: |
         gh pr edit ${{ github.event.pull_request.number }} --add-assignee ${{ github.actor }}
