@@ -124,13 +124,13 @@ def matches_played_generator(
     for match in matches:
         decorated_match = MatchDecorator(match)
 
-        if skip_team_name is None and decorated_match.has_team_name(target_team_name):
-            yield match
-        else:
-            if decorated_match.has_team_name(
-                target_team_name
-            ) and not decorated_match.has_team_name(skip_team_name):
-                yield match
+        if not decorated_match.has_team_name(target_team_name):
+            continue
+
+        if skip_team_name and decorated_match.has_team_name(skip_team_name):
+            continue
+
+        yield match
 
 
 def meetings_generator(
