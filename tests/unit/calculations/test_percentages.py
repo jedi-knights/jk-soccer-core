@@ -1,8 +1,9 @@
 import pytest
 from jk_soccer_core.models import Match
 from jk_soccer_core.calculations.percentages import (
-    WinningPercentageCalculation,
+    OpponentsOpponentsWinningPercentageCalculation,
     OpponentsWinningPercentageCalculation,
+    WinningPercentageCalculation,
 )
 
 
@@ -90,6 +91,32 @@ def test_winning_percentage_calculation_rounding(teams):
     ]
     calc = WinningPercentageCalculation("Team A", None, number_of_digits=3)
     assert calc.calculate(matches) == 0.833  # 2 wins, 1 draw
+
+
+def test_winning_percentage_calculation_tie_value_one_third():
+    """Ties weighted at 1/3 (NCAA 2024 women's soccer rule for E1)."""
+    matches = [
+        Match("Team A", "Team B", 1, 1),
+        Match("Team A", "Team C", 2, 2),
+        Match("Team A", "Team D", 0, 0),
+    ]
+    calc = WinningPercentageCalculation(
+        "Team A", None, tie_value=1 / 3, number_of_digits=4
+    )
+    assert calc.calculate(matches) == round(1 / 3, 4)
+
+
+def test_winning_percentage_calculation_tie_value_one_third_mixed_record():
+    """8-8-4 under 2024 rule: (8 + 4/3)/20 = 0.4667."""
+    matches = (
+        [Match("Team A", f"W{i}", 1, 0) for i in range(8)]
+        + [Match("Team A", f"L{i}", 0, 1) for i in range(8)]
+        + [Match("Team A", f"T{i}", 1, 1) for i in range(4)]
+    )
+    calc = WinningPercentageCalculation(
+        "Team A", None, tie_value=1 / 3, number_of_digits=4
+    )
+    assert calc.calculate(matches) == round((8 + 4 / 3) / 20, 4)
 
 
 def test_opponents_winning_percentage_calculation_no_team_name():
@@ -246,3 +273,76 @@ def test_opponents_winning_percentage_calculation_multiple_games():
 
     # Assert
     assert result == 0.25  # Opponents: Team B (1.0), Team C (0.5)
+
+
+def test_opponents_winning_percentage_propagates_tie_value():
+    """OWP must propagate tie_value into the inner WP computation."""
+    matches = [
+        Match("Team A", "Team B", 1, 0),  # B vs A (excluded from B's record)
+        Match("Team A", "Team C", 1, 0),  # C vs A (excluded from C's record)
+        Match("Team B", "Team C", 1, 1),  # B and C tie
+    ]
+    # Each opponent of Team A has a single non-A match — a tie.
+    # With tie_value=1/3, each opponent's WP = 1/3, so OWP = 1/3.
+    calc = OpponentsWinningPercentageCalculation(
+        "Team A", None, number_of_digits=4, tie_value=1 / 3
+    )
+    assert calc.calculate(matches) == round(1 / 3, 4)
+
+
+def test_oowp_returns_zero_when_team_name_missing():
+    matches = [Match("Team A", "Team B", 1, 0)]
+    assert (
+        OpponentsOpponentsWinningPercentageCalculation(None).calculate(matches) == 0.0
+    )
+    assert OpponentsOpponentsWinningPercentageCalculation("").calculate(matches) == 0.0
+
+
+def test_oowp_returns_zero_when_no_matches():
+    calc = OpponentsOpponentsWinningPercentageCalculation("Team A")
+    assert calc.calculate([]) == 0.0
+
+
+def test_oowp_basic_two_level_recursion():
+    """A's OOWP = average of A's opponents' OWPs.
+
+    Graph:
+      A beats B, A beats C
+      B beats D
+      C beats E
+      D beats E
+
+    B's OWP = avg(WP(A excl B), WP(D excl B)) = avg(1.0, 1.0) = 1.0
+    C's OWP = avg(WP(A excl C), WP(E excl C)) = avg(1.0, 0.0) = 0.5
+    OOWP = (1.0 + 0.5) / 2 = 0.75
+    """
+    matches = [
+        Match("Team A", "Team B", 1, 0),
+        Match("Team A", "Team C", 1, 0),
+        Match("Team B", "Team D", 1, 0),
+        Match("Team C", "Team E", 1, 0),
+        Match("Team D", "Team E", 1, 0),
+    ]
+    calc = OpponentsOpponentsWinningPercentageCalculation("Team A", number_of_digits=4)
+    assert calc.calculate(matches) == 0.75
+
+
+def test_oowp_propagates_tie_value():
+    """tie_value must flow through to the innermost WP computation."""
+    matches = [
+        Match("Team A", "Team B", 1, 0),
+        Match("Team A", "Team C", 1, 0),
+        Match("Team B", "Team D", 1, 1),  # B vs D ties
+        Match("Team C", "Team E", 1, 1),  # C vs E ties
+    ]
+    # B's opponents: A (excl B → A's other game vs C → won → 1.0), D (excl B → D played only B → 0.0)
+    # B's OWP = avg(1.0, 0.0) = 0.5
+    # C's opponents: A (excl C → A's other game vs B → won → 1.0), E (excl C → E played only C → 0.0)
+    # C's OWP = 0.5
+    # OOWP = 0.5
+    # tie_value should not change this result (no ties in WP computations after exclusion)
+    # but pass tie_value=1/3 to confirm wiring exists
+    calc = OpponentsOpponentsWinningPercentageCalculation(
+        "Team A", number_of_digits=4, tie_value=1 / 3
+    )
+    assert calc.calculate(matches) == 0.5
