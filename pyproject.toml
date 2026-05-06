@@ -1,9 +1,9 @@
 [project]
 name = "jk-soccer-core"
 version = "1.4.0"
-description = "Add your description here"
+description = "The core soccer module for jedi-knights."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [ "marimo", "matplotlib", "numpy", "pandas", "pydantic", "toml",]
 [[project.authors]]
 name = "Omar Crosby"
@@ -14,7 +14,7 @@ requires = [ "hatchling",]
 build-backend = "hatchling.build"
 
 [dependency-groups]
-dev = [ "mypy", "invoke", "pytest", "pytest-mock", "pytest-cov", "pytest-xdist", "ruff",]
+dev = [ "mypy", "invoke", "pytest", "pytest-mock", "pytest-cov", "pytest-xdist", "ruff", "python-commitlint",]
 
 [project.scripts]
 jk-soccer-core = "jk_soccer_core:main"
