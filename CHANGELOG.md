@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/jedi-knights/jk-soccer-core/compare/v1.3.0...v1.4.0) (2026-05-06)
+
+
+### Features
+
+* **rpi:** add RPI calculation with NCAA 2024 women's soccer support ([d2e6ac6](https://github.com/jedi-knights/jk-soccer-core/commit/d2e6ac676519d83267c0c746235b36df3c829bb0))
+
 # [1.3.0](https://github.com/jedi-knights/jk-soccer-core/compare/v1.2.1...v1.3.0) (2025-03-03)
 
 
