@@ -1,0 +1,23 @@
+tag_format: "v{{.Version}}"
+
+branches:
+  - name: main
+    is_default: true
+
+prepare:
+  changelog_file: CHANGELOG.md
+  version_files:
+    - VERSION
+    - pyproject.toml:project.version
+
+git:
+  assets:
+    - CHANGELOG.md
+    - VERSION
+    - pyproject.toml
+  message: "chore(release): {{.Version}} [skip ci]\n\n{{.Notes}}"
+
+github:
+  create_release: true
+  owner: jedi-knights
+  repo: jk-soccer-core
