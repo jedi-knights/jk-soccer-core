@@ -1,16 +1,15 @@
-from typing import Iterable, Optional
-from .abstract_match_calculation import AbstractMatchCalculation
-from jk_soccer_core import Match, MatchDecorator
+from collections.abc import Iterable
 
+from jk_soccer_core import Match
 from jk_soccer_core.match import matches_played_generator
 
 
-class WinsCalculation(AbstractMatchCalculation):
+class WinsCalculation:
     """
     Calculate the number of wins for a specific team.
     """
 
-    def __init__(self, team_name: Optional[str], skip_team_name: Optional[str] = None):
+    def __init__(self, team_name: str | None, skip_team_name: str | None = None):
         self.__team_name = team_name
         self.__skip_team_name = skip_team_name
 
@@ -18,14 +17,18 @@ class WinsCalculation(AbstractMatchCalculation):
         """
         Calculate the number of wins for a specific team.
         """
-        if not self.__team_name:
+        team = self.__team_name
+        if not team:
             return 0
 
         return sum(
             1
             for match in matches_played_generator(
-                self.__team_name, matches, skip_team_name=self.__skip_team_name
+                team, matches, skip_team_name=self.__skip_team_name
             )
             if not match.penalty_shootout
-            and MatchDecorator(match).winner == self.__team_name
+            and (
+                (match.home_team == team and match.home_score > match.away_score)
+                or (match.away_team == team and match.away_score > match.home_score)
+            )
         )

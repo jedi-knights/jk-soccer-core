@@ -1,4 +1,4 @@
-from typing import Optional, Iterable
+from collections.abc import Iterable
 
 from .models import Match
 
@@ -26,7 +26,7 @@ class MatchDecorator:
         return self.__match.home_score == self.__match.away_score
 
     @property
-    def winner(self) -> Optional[str]:
+    def winner(self) -> str | None:
         """
         Get the winning team
         """
@@ -39,7 +39,7 @@ class MatchDecorator:
         return None
 
     @property
-    def loser(self) -> Optional[str]:
+    def loser(self) -> str | None:
         """
         Get the losing team
         """
@@ -51,7 +51,7 @@ class MatchDecorator:
 
         return None
 
-    def won(self, team_name: str) -> bool:
+    def won(self, team_name: str | None) -> bool:
         """
         Check if the team won the match
         """
@@ -60,7 +60,7 @@ class MatchDecorator:
 
         return self.winner == team_name
 
-    def lost(self, team_name: str) -> bool:
+    def lost(self, team_name: str | None) -> bool:
         """
         Check if the team lost the match
         """
@@ -69,7 +69,7 @@ class MatchDecorator:
 
         return self.loser == team_name
 
-    def has_team_name(self, team_name: Optional[str]) -> bool:
+    def has_team_name(self, team_name: str | None) -> bool:
         """
         Check if the match contains a specific team name
         """
@@ -77,7 +77,7 @@ class MatchDecorator:
             self.__match.home_team == team_name or self.__match.away_team == team_name
         )
 
-    def get_opponent_name(self, target_team_name: str) -> Optional[str]:
+    def get_opponent_name(self, target_team_name: str) -> str | None:
         """
         Get the name of the opponent of a specific team
         """
@@ -91,26 +91,24 @@ class MatchDecorator:
         )
 
 
-def get_team_names(matches: Iterable[Match]) -> Iterable[str]:
+def get_team_names(matches: Iterable[Match]) -> list[str]:
     """
-    Get the names of the teams in the matches
+    Get the unique non-None team names that appear in any of the matches.
+    Order is the order each name first appears.
     """
-    team_names = list()
-
+    seen: dict[str, None] = {}
     for match in matches:
-        if match.home_team not in team_names:
-            team_names.append(match.home_team)
-
-        if match.away_team not in team_names:
-            team_names.append(match.away_team)
-
-    return list(filter(None, team_names))  # Ensure no None values
+        if match.home_team is not None:
+            seen.setdefault(match.home_team)
+        if match.away_team is not None:
+            seen.setdefault(match.away_team)
+    return list(seen)
 
 
 def matches_played_generator(
     target_team_name: str,
     matches: Iterable[Match],
-    skip_team_name: Optional[str] = None,
+    skip_team_name: str | None = None,
 ) -> Iterable[Match]:
     """
     Get the matches played by a specific team with an optional team to skip
@@ -122,37 +120,37 @@ def matches_played_generator(
     :rtype: Iterable[Match]
     """
     for match in matches:
-        decorated_match = MatchDecorator(match)
-
-        if not decorated_match.has_team_name(target_team_name):
+        if not (
+            match.home_team == target_team_name or match.away_team == target_team_name
+        ):
             continue
 
-        if skip_team_name and decorated_match.has_team_name(skip_team_name):
+        if skip_team_name and (
+            match.home_team == skip_team_name or match.away_team == skip_team_name
+        ):
             continue
 
         yield match
 
 
 def meetings_generator(
-    team_name1: Optional[str], team_name2: Optional[str], matches: Iterable[Match]
+    team_name1: str | None, team_name2: str | None, matches: Iterable[Match]
 ) -> Iterable[Match]:
     """
     Get the matches between two teams
     """
     for match in matches:
-        decorated_match = MatchDecorator(match)
-
-        if not decorated_match.has_team_name(team_name1):
+        if not (match.home_team == team_name1 or match.away_team == team_name1):
             continue
 
-        if not decorated_match.has_team_name(team_name2):
+        if not (match.home_team == team_name2 or match.away_team == team_name2):
             continue
 
         yield match
 
 
 def opponent_names_generator(
-    target_team_name: Optional[str], matches: Iterable[Match]
+    target_team_name: str | None, matches: Iterable[Match]
 ) -> Iterable[str]:
     """
     Get the names of the opponents of a specific team
@@ -160,8 +158,13 @@ def opponent_names_generator(
     if target_team_name is None:
         return
 
-    for match in matches_played_generator(target_team_name, matches):
-        opponent_name = MatchDecorator(match).get_opponent_name(target_team_name)
+    for match in matches:
+        if match.home_team == target_team_name:
+            opponent_name = match.away_team
+        elif match.away_team == target_team_name:
+            opponent_name = match.home_team
+        else:
+            continue
 
         if opponent_name is None:
             continue

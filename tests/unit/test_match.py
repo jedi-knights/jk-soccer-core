@@ -4,6 +4,7 @@ from src.jk_soccer_core.models.match import Match
 from src.jk_soccer_core.match import (
     MatchDecorator,
     get_team_names,
+    matches_played_generator,
     opponent_names_generator,
 )
 
@@ -306,3 +307,36 @@ def test_opponent_names_generator_with_none_opponent_name():
 
     # Assert
     assert result == []
+
+
+def test_opponent_names_generator_yields_when_target_is_away_team():
+    """opponent_names_generator must also yield when the target appears as
+    away_team — covers the away-team branch of the home/away dispatch."""
+    # Arrange
+    matches = [
+        Match("Team A", "Team B", 1, 0),
+        Match("Team C", "Team B", 0, 1),
+    ]
+
+    # Act
+    result = list(opponent_names_generator("Team B", matches))
+
+    # Assert
+    assert result == ["Team A", "Team C"]
+
+
+def test_matches_played_generator_skips_matches_against_skip_team():
+    """matches_played_generator must skip matches where the team plays the
+    `skip_team_name` opponent — covers the skip-filter branch."""
+    # Arrange
+    matches = [
+        Match("Team A", "Team B", 1, 0),
+        Match("Team A", "Team C", 1, 0),
+    ]
+
+    # Act
+    result = list(matches_played_generator("Team A", matches, skip_team_name="Team B"))
+
+    # Assert
+    assert len(result) == 1
+    assert result[0].away_team == "Team C"

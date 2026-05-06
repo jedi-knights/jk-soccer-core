@@ -4,6 +4,7 @@ from jk_soccer_core.calculations.percentages import (
     OpponentsOpponentsWinningPercentageCalculation,
     OpponentsWinningPercentageCalculation,
     WinningPercentageCalculation,
+    build_team_index,
 )
 
 
@@ -78,9 +79,9 @@ def test_winning_percentage_calculation_no_matches():
 
 def test_winning_percentage_calculation_skip_team_name(matches):
     calc = WinningPercentageCalculation("Team A", "Team B")
-    assert (
-        calc.calculate(matches) == 0.75
-    )  # 2 wins, 1 draw, 1 loss (skipping matches with Team B)
+    # Skipping the two A-vs-B matches leaves: A vs C (win), A vs D (draw).
+    # WP = (1 + 0.5 * 1) / 2 = 0.75
+    assert calc.calculate(matches) == 0.75
 
 
 def test_winning_percentage_calculation_rounding(teams):
@@ -129,7 +130,7 @@ def test_opponents_winning_percentage_calculation_no_team_name():
         Match("Team A", "Team C", 2, 1),
         Match("Team D", "Team E", 1, 1),
     ]
-    calc = OpponentsWinningPercentageCalculation(None, None)
+    calc = OpponentsWinningPercentageCalculation(None)
 
     # Act
     result = calc.calculate(matches)
@@ -148,7 +149,7 @@ def test_opponents_winning_percentage_calculation_empty_team_name():
         Match("Team A", "Team C", 2, 1),
         Match("Team D", "Team E", 1, 1),
     ]
-    calc = OpponentsWinningPercentageCalculation("", None)
+    calc = OpponentsWinningPercentageCalculation("")
 
     # Act
     result = calc.calculate(matches)
@@ -168,7 +169,7 @@ def test_opponents_winning_percentage_calculation_all_wins():
         Match("Team F", "Team H", 1, 1),
         Match("Team G", "Team H", 0, 2),
     ]
-    calc = OpponentsWinningPercentageCalculation("Team E", None)
+    calc = OpponentsWinningPercentageCalculation("Team E")
 
     # Act
     result = calc.calculate(matches)
@@ -188,7 +189,7 @@ def test_opponents_winning_percentage_calculation_all_losses():
         Match("Team H", "Team I", 2, 2),
         Match("Team G", "Team H", 0, 2),
     ]
-    calc = OpponentsWinningPercentageCalculation("Team F", None)
+    calc = OpponentsWinningPercentageCalculation("Team F")
 
     # Act
     result = calc.calculate(matches)
@@ -203,34 +204,13 @@ def test_opponents_winning_percentage_calculation_no_matches():
     """
     # Arrange
     matches = []
-    calc = OpponentsWinningPercentageCalculation("Team A", None)
+    calc = OpponentsWinningPercentageCalculation("Team A")
 
     # Act
     result = calc.calculate(matches)
 
     # Assert
     assert result == 0.0
-
-
-def test_opponents_winning_percentage_calculation_skip_team_name():
-    """
-    Test the calculation when skipping a specific team.
-    """
-    # Arrange
-    matches = [
-        Match("Team A", "Team B", 1, 0),
-        Match("Team A", "Team C", 2, 1),
-        Match("Team A", "Team D", 1, 1),
-        Match("Team B", "Team C", 0, 2),
-        Match("Team C", "Team D", 1, 1),
-    ]
-    calc = OpponentsWinningPercentageCalculation("Team A", "Team B")
-
-    # Act
-    result = calc.calculate(matches)
-
-    # Assert
-    assert result == 0.42  # Opponents: Team C (1.0), Team D (0.5)
 
 
 def test_opponents_winning_percentage_calculation_rounding():
@@ -245,7 +225,7 @@ def test_opponents_winning_percentage_calculation_rounding():
         Match("Team B", "Team C", 0, 2),
         Match("Team C", "Team D", 1, 1),
     ]
-    calc = OpponentsWinningPercentageCalculation("Team A", None, number_of_digits=3)
+    calc = OpponentsWinningPercentageCalculation("Team A", number_of_digits=3)
 
     # Act
     result = calc.calculate(matches)
@@ -266,7 +246,7 @@ def test_opponents_winning_percentage_calculation_multiple_games():
         Match("Team B", "Team C", 0, 2),
         Match("Team C", "Team D", 1, 1),
     ]
-    calc = OpponentsWinningPercentageCalculation("Team A", None)
+    calc = OpponentsWinningPercentageCalculation("Team A")
 
     # Act
     result = calc.calculate(matches)
@@ -285,7 +265,7 @@ def test_opponents_winning_percentage_propagates_tie_value():
     # Each opponent of Team A has a single non-A match — a tie.
     # With tie_value=1/3, each opponent's WP = 1/3, so OWP = 1/3.
     calc = OpponentsWinningPercentageCalculation(
-        "Team A", None, number_of_digits=4, tie_value=1 / 3
+        "Team A", number_of_digits=4, tie_value=1 / 3
     )
     assert calc.calculate(matches) == round(1 / 3, 4)
 
@@ -301,6 +281,21 @@ def test_oowp_returns_zero_when_team_name_missing():
 def test_oowp_returns_zero_when_no_matches():
     calc = OpponentsOpponentsWinningPercentageCalculation("Team A")
     assert calc.calculate([]) == 0.0
+
+
+def test_owp_returns_zero_when_all_opponents_are_none():
+    """OWP must handle matches where the opponent slot is None — covers the
+    `if opponent is None: continue` and `if count == 0` defensive paths."""
+    matches = [Match("Team A", None, 1, 0)]
+    calc = OpponentsWinningPercentageCalculation("Team A")
+    assert calc.calculate(matches) == 0.0
+
+
+def test_oowp_returns_zero_when_all_opponents_are_none():
+    """OOWP defensive paths analogous to OWP."""
+    matches = [Match("Team A", None, 1, 0)]
+    calc = OpponentsOpponentsWinningPercentageCalculation("Team A")
+    assert calc.calculate(matches) == 0.0
 
 
 def test_oowp_basic_two_level_recursion():
@@ -346,3 +341,116 @@ def test_oowp_propagates_tie_value():
         "Team A", number_of_digits=4, tie_value=1 / 3
     )
     assert calc.calculate(matches) == 0.5
+
+
+# Lock-in tests: per-element rounding must not be reintroduced.
+# Each `_compute(...)` returns the unrounded value (e.g. 1/3 ≈ 0.3333333…),
+# while `calculate(...)` rounds at the boundary (e.g. 0.3333). The two values
+# differ as floats, so any change that reintroduces rounding inside `_compute`
+# would make `_compute(...) == 1/3` fail.
+
+
+def test_wp_compute_returns_unrounded_value():
+    """`WinningPercentageCalculation._compute` returns the raw WP at full
+    precision; rounding only happens inside `calculate`."""
+    matches = [Match("Team A", "Team B", 1, 1)]  # one tie
+    calc = WinningPercentageCalculation("Team A", number_of_digits=4, tie_value=1 / 3)
+    assert calc._compute(matches) == 1 / 3
+    assert calc.calculate(matches) == round(1 / 3, 4)
+    assert calc._compute(matches) != calc.calculate(matches)
+
+
+def test_owp_compute_averages_unrounded_per_opponent_wp():
+    """`OpponentsWinningPercentageCalculation._compute` averages opponent
+    WPs at full precision. With tie=1/3 and each opponent having a single
+    tie excl. A, every opponent's raw WP is 1/3, so OWP is exactly 1/3.
+    Per-opponent rounding would yield ``round(1/3, 4)`` (= 0.3333) instead.
+    """
+    matches = [
+        Match("Team A", "Team B", 1, 0),
+        Match("Team A", "Team C", 1, 0),
+        Match("Team B", "Team D", 1, 1),  # B's only non-A game: a tie
+        Match("Team C", "Team E", 1, 1),  # C's only non-A game: a tie
+    ]
+    calc = OpponentsWinningPercentageCalculation(
+        "Team A", number_of_digits=4, tie_value=1 / 3
+    )
+    assert calc._compute(matches) == 1 / 3
+    assert calc.calculate(matches) == round(1 / 3, 4)
+    assert calc._compute(matches) != calc.calculate(matches)
+
+
+def test_oowp_compute_averages_unrounded_per_opponent_owp():
+    """`OpponentsOpponentsWinningPercentageCalculation._compute` averages
+    opponent OWPs at full precision. The fixture is constructed so every
+    opponent's raw OWP is 1/3, making OOWP raw exactly 1/3. Per-OWP
+    rounding inside `_compute` would produce ``round(1/3, 4)`` instead.
+    """
+    matches = [
+        Match("Team A", "Team B", 1, 1),  # tie
+        Match("Team A", "Team C", 1, 1),  # tie
+        Match("Team B", "Team D", 1, 1),  # tie
+        Match("Team C", "Team E", 1, 1),  # tie
+        Match("Team D", "Team F", 1, 1),  # tie
+        Match("Team E", "Team G", 1, 1),  # tie
+    ]
+    # With tie=1/3 throughout: every "0-0-1" record gives WP raw = 1/3,
+    # so each opponent's OWP raw = 1/3, and OOWP raw = 1/3.
+    calc = OpponentsOpponentsWinningPercentageCalculation(
+        "Team A", number_of_digits=4, tie_value=1 / 3
+    )
+    assert calc._compute(matches) == 1 / 3
+    assert calc.calculate(matches) == round(1 / 3, 4)
+    assert calc._compute(matches) != calc.calculate(matches)
+
+
+# Lock-in tests against `_compute_indexed` directly. These exist alongside the
+# `_compute(...)` lock-ins above to also catch a regression that introduced
+# rounding inside `_compute_indexed` only — the path used by
+# `RPICalculation.calculate` and `RPICalculation.calculate_for_all`.
+
+
+def test_wp_compute_indexed_returns_unrounded_value():
+    """`_compute_indexed` is the path used by RPI and the batch API; it must
+    return the raw WP at full precision."""
+    matches = [Match("Team A", "Team B", 1, 1)]
+    index = build_team_index(matches)
+    calc = WinningPercentageCalculation("Team A", number_of_digits=4, tie_value=1 / 3)
+    assert calc._compute_indexed(index) == 1 / 3
+    assert calc._compute_indexed(index) != round(1 / 3, 4)
+
+
+def test_owp_compute_indexed_averages_unrounded_per_opponent_wp():
+    """OWP via `_compute_indexed` must average opponent WPs at full
+    precision when called against a prebuilt index."""
+    matches = [
+        Match("Team A", "Team B", 1, 0),
+        Match("Team A", "Team C", 1, 0),
+        Match("Team B", "Team D", 1, 1),
+        Match("Team C", "Team E", 1, 1),
+    ]
+    index = build_team_index(matches)
+    calc = OpponentsWinningPercentageCalculation(
+        "Team A", number_of_digits=4, tie_value=1 / 3
+    )
+    assert calc._compute_indexed(index) == 1 / 3
+    assert calc._compute_indexed(index) != round(1 / 3, 4)
+
+
+def test_oowp_compute_indexed_averages_unrounded_per_opponent_owp():
+    """OOWP via `_compute_indexed` must average opponent OWPs at full
+    precision when called against a prebuilt index."""
+    matches = [
+        Match("Team A", "Team B", 1, 1),
+        Match("Team A", "Team C", 1, 1),
+        Match("Team B", "Team D", 1, 1),
+        Match("Team C", "Team E", 1, 1),
+        Match("Team D", "Team F", 1, 1),
+        Match("Team E", "Team G", 1, 1),
+    ]
+    index = build_team_index(matches)
+    calc = OpponentsOpponentsWinningPercentageCalculation(
+        "Team A", number_of_digits=4, tie_value=1 / 3
+    )
+    assert calc._compute_indexed(index) == 1 / 3
+    assert calc._compute_indexed(index) != round(1 / 3, 4)
