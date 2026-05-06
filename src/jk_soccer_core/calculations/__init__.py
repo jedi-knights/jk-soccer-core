@@ -1,16 +1,25 @@
 from .draws import DrawsCalculation
 from .losses import LossesCalculation
-from .wins import WinsCalculation
-from .points import PointsCalculation
 from .meetings import MeetingsCalculation
-from .percentages import WinningPercentageCalculation
+from .percentages import (
+    OpponentsOpponentsWinningPercentageCalculation,
+    OpponentsWinningPercentageCalculation,
+    WinningPercentageCalculation,
+)
+from .points import PointsCalculation
+from .rpi import RPIBreakdown, RPICalculation
+from .wins import WinsCalculation
 
 
 __all__ = [
     "DrawsCalculation",
     "LossesCalculation",
-    "WinsCalculation",
-    "PointsCalculation",
     "MeetingsCalculation",
+    "OpponentsOpponentsWinningPercentageCalculation",
+    "OpponentsWinningPercentageCalculation",
+    "PointsCalculation",
+    "RPIBreakdown",
+    "RPICalculation",
     "WinningPercentageCalculation",
+    "WinsCalculation",
 ]
